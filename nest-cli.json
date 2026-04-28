@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/logistream/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/logistream/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/logistream",
+  "projects": {
+    "logistics-engine": {
+      "type": "application",
+      "root": "apps/logistics-engine",
+      "entryFile": "main",
+      "sourceRoot": "apps/logistics-engine/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/logistics-engine/tsconfig.app.json"
+      }
+    },
+    "logistream": {
+      "type": "application",
+      "root": "apps/logistream",
+      "entryFile": "main",
+      "sourceRoot": "apps/logistream/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/logistream/tsconfig.app.json"
+      }
+    },
+    "orders-api": {
+      "type": "application",
+      "root": "apps/orders-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/orders-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/orders-api/tsconfig.app.json"
+      }
+    }
+  }
+}
