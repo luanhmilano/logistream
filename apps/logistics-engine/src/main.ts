@@ -27,4 +27,4 @@ async function bootstrap() {
   await app.startAllMicroservices();
   await app.listen(process.env.LOGISTICS_ENGINE_PORT ?? 3002);
 }
-bootstrap();
+void bootstrap();

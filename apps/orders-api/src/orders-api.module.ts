@@ -13,11 +13,25 @@ import {
   parseKafkaBrokers,
 } from '../../../libs/common/index';
 
+const OrderStatusHistorySchema = new Schema(
+  {
+    status: { type: String, required: true },
+    changedAt: { type: Date, required: true },
+  },
+  { _id: false },
+);
+
 const OrderSchema = new Schema(
   {
     orderId: { type: String, required: true, unique: true },
     status: { type: String, required: true },
     createdAt: { type: Date, required: true },
+    updatedAt: { type: Date, required: true },
+    statusHistory: {
+      type: [OrderStatusHistorySchema],
+      default: [],
+      required: true,
+    },
   },
   { versionKey: false },
 );
