@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Schema } from 'mongoose';
 import { OrdersApiController } from './orders-api.controller';
 import { OrdersApiService } from './orders-api.service';
 import {
@@ -12,29 +11,7 @@ import {
   ORDERS_KAFKA_CLIENT,
   parseKafkaBrokers,
 } from '../../../libs/common/index';
-
-const OrderStatusHistorySchema = new Schema(
-  {
-    status: { type: String, required: true },
-    changedAt: { type: Date, required: true },
-  },
-  { _id: false },
-);
-
-const OrderSchema = new Schema(
-  {
-    orderId: { type: String, required: true, unique: true },
-    status: { type: String, required: true },
-    createdAt: { type: Date, required: true },
-    updatedAt: { type: Date, required: true },
-    statusHistory: {
-      type: [OrderStatusHistorySchema],
-      default: [],
-      required: true,
-    },
-  },
-  { versionKey: false },
-);
+import { OrderSchema } from './app/modules/orders/schemas/order.schema';
 
 @Module({
   imports: [
