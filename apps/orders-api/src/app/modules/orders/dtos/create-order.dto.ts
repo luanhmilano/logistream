@@ -10,42 +10,39 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-// 1. O que esperamos de cada item na requisição HTTP
 class CreateOrderItemDto {
   @IsString()
   @IsNotEmpty()
-  productId: string;
+  productId!: string;
 
   @IsNumber()
   @Min(1)
-  quantity: number;
+  quantity!: number;
 }
 
-// 2. Coordenadas e endereço
 class DestinationDto {
   @IsLatitude()
-  lat: number;
+  lat!: number;
 
   @IsLongitude()
-  lng: number;
+  lng!: number;
 
   @IsString()
   @IsNotEmpty()
-  address: string;
+  address!: string;
 }
 
-// 3. O Payload principal da requisição (POST /orders)
 export class CreateOrderDto {
   @IsString()
   @IsNotEmpty()
-  customerId: string;
+  customerId!: string;
 
   @ValidateNested()
-  @Type(() => DestinationDto) // Necessário para validar objetos aninhados
-  destination: DestinationDto;
+  @Type(() => DestinationDto)
+  destination!: DestinationDto;
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateOrderItemDto)
-  items: CreateOrderItemDto[];
+  items!: CreateOrderItemDto[];
 }

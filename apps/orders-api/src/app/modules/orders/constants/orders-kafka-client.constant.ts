@@ -1,0 +1,2 @@
+export const ORDERS_KAFKA_CLIENT =
+  process.env.ORDERS_KAFKA_CLIENT || 'ORDERS_KAFKA_CLIENT';

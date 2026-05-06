@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { OrdersApiModule } from '../src/app.module';
+import { OrdersApiModule } from '../src/orders-api.module';
 
 describe('OrdersApiController (e2e)', () => {
   let app: INestApplication;

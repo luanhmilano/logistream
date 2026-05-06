@@ -1,81 +1,46 @@
-import { Schema } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Destination } from './destination.schema';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { OrderItem } from './order-item.schema';
+import { ORDER_STATUSES } from '../constants/order-statuses.constant';
 
-export const ORDER_STATUSES = [
-  'PENDING',
-  'IN_TRANSIT',
-  'DELIVERED',
-  'DELAYED',
-  'CANCELED',
-] as const;
+export type OrderDocument = HydratedDocument<Order>;
 
-export type OrderStatus = (typeof ORDER_STATUSES)[number];
+@Schema()
+export class Order {
+  @Prop({ required: true, unique: true })
+  orderId!: string;
 
-export const OrderStatusHistorySchema = new Schema(
-  {
-    status: { type: String, required: true },
-    changedAt: { type: Date, required: true },
-  },
-  { _id: false },
-);
+  @Prop({ required: true })
+  customerId!: string;
 
-export const OrderItemSchema = new Schema(
-  {
-    productId: { type: String, required: true },
-    name: { type: String, required: true },
-    priceAtPurchase: { type: Number, required: true },
-    quantity: { type: Number, required: true, min: 1 },
-  },
-  { _id: false },
-);
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Destination' }],
+    required: true,
+  })
+  destination!: Destination;
 
-export const DestinationSchema = new Schema(
-  {
-    lat: { type: Number, required: true },
-    lng: { type: Number, required: true },
-    address: { type: String, required: true },
-  },
-  { _id: false },
-);
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'OrderItem' }],
+    required: true,
+    validate: [
+      (v: any[]) => v.length > 0,
+      'O pedido precisa ter pelo menos um item',
+    ],
+  })
+  items!: OrderItem[];
 
-export const OrderSchema = new Schema(
-  {
-    orderId: { type: String, required: true, unique: true },
-    customerId: { type: String, required: true },
-    destination: { type: DestinationSchema, required: true },
-    items: {
-      type: [OrderItemSchema],
-      required: true,
-      validate: [
-        (v: any[]) => v.length > 0,
-        'O pedido precisa ter pelo menos um item',
-      ],
-    },
-    status: {
-      type: String,
-      enum: ORDER_STATUSES,
-      required: true,
-      default: 'PENDING',
-    },
-    statusHistory: {
-      type: [OrderStatusHistorySchema],
-      default: [],
-    },
-  },
-  {
-    versionKey: false,
-    timestamps: true,
-  },
-);
+  @Prop({
+    required: true,
+    enum: ORDER_STATUSES,
+    default: 'PENDING',
+  })
+  status!: string;
 
-export interface OrderCreatedEvent {
-  orderId: string;
-  status: string;
-  timestamp: string;
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'OrderStatusHistory' }],
+  })
+  statusHistory!: { status: string; changedAt: Date }[];
 }
 
-export interface OrderStatusUpdatedEvent {
-  orderId: string;
-  status: OrderStatus;
-  previousStatus: OrderStatus;
-  timestamp: string;
-}
+export const OrderSchema = SchemaFactory.createForClass(Order);
